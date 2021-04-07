@@ -1,56 +1,27 @@
-import {
-  Link as ChakraLink,
-  Text,
-  Code,
-  List,
-  ListIcon,
-  ListItem,
-} from '@chakra-ui/react'
-import { CheckCircleIcon, LinkIcon } from '@chakra-ui/icons'
+import { Flex, Button, Stack } from '@chakra-ui/react';
+import { Input } from '../components/Form/Input';
 
-import { Hero } from '../components/Hero'
-import { Container } from '../components/Container'
-import { Main } from '../components/Main'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
-import { CTA } from '../components/CTA'
-import { Footer } from '../components/Footer'
+export default function SignIn(): JSX.Element {
+  return (
+    <Flex w="100vw" h="100vh" align="center" justify="center">
+      <Flex
+        as="form"
+        w="100%"
+        maxWidth={360}
+        bg="gray.800"
+        p="8"
+        borderRadius={8}
+        flexDir="column"
+      >
+        <Stack spacing="4">
+          <Input type="email" name="email" label="E-mail" />
+          <Input type="password" name="password" label="Senha" />
+        </Stack>
 
-const Index = () => (
-  <Container height="100vh">
-    <Hero />
-    <Main>
-      <Text>
-        Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code> +{' '}
-        <Code>typescript</Code>.
-      </Text>
-
-      <List spacing={3} my={0}>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink
-            isExternal
-            href="https://chakra-ui.com"
-            flexGrow={1}
-            mr={2}
-          >
-            Chakra UI <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink isExternal href="https://nextjs.org" flexGrow={1} mr={2}>
-            Next.js <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-      </List>
-    </Main>
-
-    <DarkModeSwitch />
-    <Footer>
-      <Text>Next ❤️ Chakra</Text>
-    </Footer>
-    <CTA />
-  </Container>
-)
-
-export default Index
+        <Button type="submit" mt="6" colorScheme="pink" size="lg">
+          Entrar
+        </Button>
+      </Flex>
+    </Flex>
+  );
+}
