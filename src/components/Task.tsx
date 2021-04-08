@@ -17,7 +17,7 @@ import {
   RiDeleteBin5Fill,
 } from 'react-icons/ri';
 
-interface IUpdateFood {
+interface IUpdateTask {
   id: string;
   name: string;
 }
@@ -25,13 +25,19 @@ interface IUpdateFood {
 interface CustomEditable {
   taskName: string;
   taskId: string;
-  handleUpdateTask: (task: IUpdateFood) => void;
+  handleUpdateTask: (task: IUpdateTask) => Promise<void>;
+  handleDeleteTask: (id: string) => Promise<void>;
+  handleCompleteTask: (id: string) => Promise<void>;
+  isCompleted?: boolean;
 }
 
 export function Task({
   taskName,
   taskId,
   handleUpdateTask,
+  handleDeleteTask,
+  handleCompleteTask,
+  isCompleted = false,
 }: CustomEditable): JSX.Element {
   const handleSubmit = useCallback(
     async nextValue => {
@@ -68,7 +74,11 @@ export function Task({
           icon={<RiEditLine />}
           {...getEditButtonProps()}
         />
-        <IconButton aria-label="delete" icon={<RiDeleteBin5Fill />} />
+        <IconButton
+          onClick={() => handleDeleteTask(taskId)}
+          aria-label="delete"
+          icon={<RiDeleteBin5Fill />}
+        />
       </ButtonGroup>
     );
   }
@@ -84,7 +94,11 @@ export function Task({
       onSubmit={nextValue => handleSubmit(nextValue)}
     >
       <HStack spacing="4">
-        <Checkbox colorScheme="pink" />
+        <Checkbox
+          colorScheme="pink"
+          defaultChecked={isCompleted}
+          onChange={() => handleCompleteTask(taskId)}
+        />
         <EditablePreview />
       </HStack>
       <EditableInput />

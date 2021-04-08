@@ -13,6 +13,8 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
+import NextLink from 'next/link';
+
 import { RiAddLine, RiPencilLine } from 'react-icons/ri';
 
 import { Header } from '../../components/Header';
@@ -32,16 +34,17 @@ export default function UserList(): JSX.Element {
             <Heading size="lg" fontWeight="normal">
               Usuários
             </Heading>
-
-            <Button
-              as="a"
-              size="sm"
-              fontSize="sm"
-              colorScheme="pink"
-              leftIcon={<Icon as={RiAddLine} fontSize="20" />}
-            >
-              Criar novo
-            </Button>
+            <NextLink href="/users/create">
+              <Button
+                as="a"
+                size="sm"
+                fontSize="sm"
+                colorScheme="pink"
+                leftIcon={<Icon as={RiAddLine} fontSize="20" />}
+              >
+                Criar usuário
+              </Button>
+            </NextLink>
           </Flex>
 
           <Table colorScheme="whiteAlpha">

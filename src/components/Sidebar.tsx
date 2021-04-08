@@ -1,3 +1,4 @@
+import NextLink from 'next/link';
 import { Box, Stack, Text, Link, Icon } from '@chakra-ui/react';
 import { RiTaskLine, RiContactsLine } from 'react-icons/ri';
 
@@ -10,18 +11,22 @@ export function Sidebar(): JSX.Element {
             MENU
           </Text>
           <Stack spacing="4" mt="8" align="stretch">
-            <Link display="flex" align="center">
-              <Icon as={RiTaskLine} fontSize="20" />
-              <Text ml="4" fontWeight="medium">
-                Tarefas
-              </Text>
-            </Link>
-            <Link display="flex" align="center">
-              <Icon as={RiContactsLine} fontSize="20" />
-              <Text ml="4" fontWeight="medium">
-                Usuários
-              </Text>
-            </Link>
+            <NextLink href="/tasks">
+              <Link display="flex" align="center">
+                <Icon as={RiTaskLine} fontSize="20" />
+                <Text ml="4" fontWeight="medium">
+                  Tarefas
+                </Text>
+              </Link>
+            </NextLink>
+            <NextLink href="/users">
+              <Link display="flex" align="center">
+                <Icon as={RiContactsLine} fontSize="20" />
+                <Text ml="4" fontWeight="medium">
+                  Usuários
+                </Text>
+              </Link>
+            </NextLink>
           </Stack>
         </Box>
       </Stack>

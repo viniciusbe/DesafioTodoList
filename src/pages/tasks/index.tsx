@@ -5,6 +5,7 @@ import {
   Heading,
   Icon,
   StackDivider,
+  Text,
   VStack,
 } from '@chakra-ui/react';
 import { RiAddLine } from 'react-icons/ri';
@@ -25,9 +26,11 @@ interface ITask {
 
 export default function UserList(): JSX.Element {
   const [tasks, setTasks] = useState<ITask[]>([]);
+  const [pendingTasks, setPendingTasks] = useState<ITask[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<ITask[]>([]);
 
   useEffect(() => {
-    setTasks([
+    const data = [
       {
         id: '1',
         name: 'Tarefa 1',
@@ -42,8 +45,28 @@ export default function UserList(): JSX.Element {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
-    ]);
+      {
+        id: '3',
+        name: 'Tarefa 3',
+        isCompleted: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: '4',
+        name: 'Tarefa 4',
+        isCompleted: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+    setTasks(data);
   }, []);
+
+  useEffect(() => {
+    setPendingTasks(tasks.filter(task => !task.isCompleted));
+    setCompletedTasks(tasks.filter(task => task.isCompleted));
+  }, [tasks]);
 
   const handleCreateTask = useCallback(() => {
     setTasks([
@@ -59,7 +82,7 @@ export default function UserList(): JSX.Element {
   }, [tasks]);
 
   const handleUpdateTask = useCallback(
-    ({ id, name }) => {
+    async ({ id, name }) => {
       setTasks(
         tasks.map(task => {
           return task.id === id
@@ -69,6 +92,29 @@ export default function UserList(): JSX.Element {
               }
             : task;
         }),
+      );
+    },
+    [tasks],
+  );
+
+  const handleDeleteTask = useCallback(
+    async id => {
+      setTasks(tasks.filter(task => task.id !== id));
+    },
+    [tasks],
+  );
+
+  const handleCompleteTask = useCallback(
+    async id => {
+      setTasks(
+        tasks.map(task =>
+          task.id === id
+            ? {
+                ...task,
+                isCompleted: !task.isCompleted,
+              }
+            : task,
+        ),
       );
     },
     [tasks],
@@ -99,12 +145,30 @@ export default function UserList(): JSX.Element {
           </Flex>
           <VStack spacing="4" divider={<StackDivider borderColor="gray.500" />}>
             <StackDivider />
-            {tasks.map(task => (
+            {tasks.length || (
+              <Box>
+                <Text>Sem tarefas ainda</Text>
+              </Box>
+            )}
+            {pendingTasks.map(task => (
               <Task
                 taskName={task.name}
                 key={task.id}
-                handleUpdateTask={handleUpdateTask}
                 taskId={task.id}
+                handleUpdateTask={handleUpdateTask}
+                handleDeleteTask={handleDeleteTask}
+                handleCompleteTask={handleCompleteTask}
+              />
+            ))}
+            {completedTasks.map(task => (
+              <Task
+                taskName={task.name}
+                key={task.id}
+                taskId={task.id}
+                handleUpdateTask={handleUpdateTask}
+                handleDeleteTask={handleDeleteTask}
+                handleCompleteTask={handleCompleteTask}
+                isCompleted
               />
             ))}
           </VStack>
