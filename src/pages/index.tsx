@@ -3,7 +3,9 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { useRouter } from 'next/router';
 import { Input } from '../components/Form/Input';
+import { useAuth } from '../hooks/auth';
 
 interface SignInFormData {
   email: string;
@@ -22,9 +24,21 @@ export default function SignIn(): JSX.Element {
 
   const { errors } = formState;
 
+  const { signIn } = useAuth();
+
+  const router = useRouter();
+
   const handleSignIn: SubmitHandler<SignInFormData> = async values => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    console.log(values);
+    try {
+      await signIn({
+        email: values.email,
+        password: values.password,
+      });
+
+      router.push('/tasks');
+    } catch (error) {
+      alert('Erro na autenticação');
+    }
   };
 
   return (
