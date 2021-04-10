@@ -15,8 +15,11 @@ class Task {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ default: false })
   is_completed: boolean;
+
+  @Column()
+  name: string;
 
   @Column()
   user_id: string;

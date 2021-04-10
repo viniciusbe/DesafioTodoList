@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, {
   createContext,
   useCallback,
@@ -11,7 +12,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  avatar_url: string;
+  is_admin: boolean;
 }
 interface AuthState {
   token: string;
@@ -26,12 +27,16 @@ interface AuthContextData {
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
   updateUser(user: User): void;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>({} as AuthState);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem('@TodoList:token');
@@ -41,15 +46,15 @@ const AuthProvider: React.FC = ({ children }) => {
       api.defaults.headers.authorization = `Bearer ${token}`;
       setData({ token, user: JSON.parse(user) });
     }
-  }, []);
+
+    setIsLoading(false);
+  }, [router]);
 
   const signIn = useCallback(async ({ email, password }) => {
     const response = await api.post('sessions', {
       email,
       password,
     });
-
-    console.log(response);
 
     const { token, user } = response.data;
     localStorage.setItem('@TodoList:token', token);
@@ -81,7 +86,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signIn, signOut, updateUser }}
+      value={{ user: data.user, signIn, signOut, updateUser, isLoading }}
     >
       {children}
     </AuthContext.Provider>

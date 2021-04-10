@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   Flex,
   Heading,
@@ -24,6 +25,7 @@ interface CreateUserFormData {
   email: string;
   password: string;
   password_confirmation: string;
+  is_admin: boolean;
 }
 
 const createUserFormSchema = yup.object().shape({
@@ -38,12 +40,6 @@ const createUserFormSchema = yup.object().shape({
 export default function CreateUser(): JSX.Element {
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(createUserFormSchema),
-    defaultValues: {
-      name: 'Dale',
-      email: 'sdfsdf@dsgdas.com',
-      password: 'sasdasd',
-      password_confirmation: 'sasdasd',
-    },
   });
 
   const { errors } = formState;
@@ -110,6 +106,9 @@ export default function CreateUser(): JSX.Element {
               />
             </SimpleGrid>
           </VStack>
+          <Checkbox mt="4" {...register('is_admin')}>
+            Administrador?
+          </Checkbox>
 
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">

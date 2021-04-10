@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   Flex,
   Heading,
@@ -14,12 +15,16 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+
 import { Input } from '../../components/Form/Input';
 import { Header } from '../../components/Header';
 import { Sidebar } from '../../components/Sidebar';
-import api from '../../services/api';
 
-interface CreateUserFormData {
+import api from '../../services/api';
+import { useAuth } from '../../hooks/auth';
+
+interface UpdateProfileFormData {
   name: string;
   email: string;
   password: string;
@@ -29,34 +34,39 @@ interface CreateUserFormData {
 const createUserFormSchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
   email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
-  password: yup.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
+  password: yup.string().when('isResetPassword', {
+    is: true,
+    then: yup.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
+    otherwise: yup.string().ensure().optional(),
+  }),
   password_confirmation: yup
     .string()
     .oneOf([null, yup.ref('password')], 'As senhas precisam ser iguais'),
 });
 
 export default function CreateUser(): JSX.Element {
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, reset } = useForm({
     resolver: yupResolver(createUserFormSchema),
-    defaultValues: {
-      name: 'Dale',
-      email: 'sdfsdf@dsgdas.com',
-      password: 'sasdasd',
-      password_confirmation: 'sasdasd',
-    },
   });
 
   const { errors } = formState;
 
+  const { user, updateUser } = useAuth();
+
+  useEffect(() => {
+    reset(user);
+  }, [user, reset]);
+
   const router = useRouter();
 
-  const handleCreateUser: SubmitHandler<CreateUserFormData> = async values => {
+  const handleUpdateProfile: SubmitHandler<UpdateProfileFormData> = async values => {
     try {
-      await api.post('users', values);
-      alert('Usuário criado com sucesso');
-      router.push('/users');
+      const { data } = await api.put('profile', values);
+      updateUser(data);
+      router.push('/tasks');
+      alert('Perfil atualizado com sucesso');
     } catch {
-      alert('Falha ao criar novo usuário');
+      alert('Falha ao atualizar perfil');
     }
   };
 
@@ -73,10 +83,10 @@ export default function CreateUser(): JSX.Element {
           borderRadius={8}
           bg="gray.800"
           p="8"
-          onSubmit={handleSubmit(handleCreateUser)}
+          onSubmit={handleSubmit(handleUpdateProfile)}
         >
           <Heading size="lg" fontWeight="normal">
-            Criar usuário
+            Editar perfil
           </Heading>
 
           <Divider my="6" borderColor="gray.700" />
@@ -94,6 +104,10 @@ export default function CreateUser(): JSX.Element {
                 {...register('email')}
               />
             </SimpleGrid>
+
+            <Checkbox {...register('isResetPassword')}>
+              Resetar a senha?
+            </Checkbox>
 
             <SimpleGrid minChildWidth="240px" spacing="8" w="100%">
               <Input
@@ -113,7 +127,7 @@ export default function CreateUser(): JSX.Element {
 
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">
-              <Button colorScheme="whiteAlpha">Cancelar</Button>
+              <Button onClick={() => router.push('/tasks')}>Cancelar</Button>
               <Button
                 type="submit"
                 colorScheme="pink"

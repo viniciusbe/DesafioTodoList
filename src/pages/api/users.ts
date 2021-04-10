@@ -4,6 +4,7 @@ import { hash } from 'bcryptjs';
 
 import User from '../../entities/User';
 import { prepareConnection } from '../../lib/db';
+import { ensureAuthenticated } from '../../util/ensureAuthenticated';
 
 export default async function Users(
   request: NextApiRequest,
@@ -11,6 +12,23 @@ export default async function Users(
 ): Promise<NextApiResponse | void> {
   await prepareConnection();
   const usersRepository = getRepository(User);
+  const user_id = ensureAuthenticated(request);
+
+  if (user_id) {
+    const checkUserAdmin = await usersRepository.findOne(user_id);
+
+    if (!checkUserAdmin?.is_admin) {
+      return response.status(400).json({
+        status: 'erro',
+        message: 'Usuário não é administrador',
+      });
+    }
+  } else {
+    return response.status(400).json({
+      status: 'erro',
+      message: 'Token JWT inválido',
+    });
+  }
 
   switch (request.method) {
     case 'GET': {
@@ -20,7 +38,7 @@ export default async function Users(
     }
 
     case 'POST': {
-      const { name, email, password } = request.body;
+      const { name, email, password, is_admin } = request.body;
 
       const checkUserExists = await usersRepository.findOne({
         where: { email },
@@ -39,6 +57,7 @@ export default async function Users(
         name,
         email,
         password: hashedPassword,
+        is_admin,
       });
 
       await usersRepository.save(user);
@@ -46,7 +65,14 @@ export default async function Users(
       return response.status(200).json({ ...user, password: undefined });
     }
     case 'PUT': {
-      const { id, name, email, isResetPassword, password } = request.body;
+      const {
+        id,
+        name,
+        email,
+        isResetPassword,
+        password,
+        is_admin,
+      } = request.body;
 
       const user = await usersRepository.findOne(id);
 
@@ -78,12 +104,14 @@ export default async function Users(
           name,
           email,
           password: hashedPassword,
+          is_admin,
         });
       } else {
         updatedUser = await usersRepository.save({
           id: user.id,
           name,
           email,
+          is_admin,
         });
       }
 
@@ -93,8 +121,7 @@ export default async function Users(
       });
     }
     case 'DELETE': {
-      const { id } = request.query;
-      console.log(id);
+      const { id } = request.body;
 
       const user = await usersRepository.findOne(String(id));
 
@@ -105,9 +132,11 @@ export default async function Users(
         });
       }
 
-      await usersRepository.softDelete(id);
+      await usersRepository.delete(id);
 
-      return response.status(200);
+      return response.status(200).json({
+        message: 'Usuário excluido com sucesso',
+      });
     }
 
     default:

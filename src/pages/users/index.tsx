@@ -21,8 +21,8 @@ import { RiAddLine, RiPencilLine, RiDeleteBin5Fill } from 'react-icons/ri';
 
 import { Header } from '../../components/Header';
 import { EditUser } from '../../components/Modal/EditUser';
-// import { Pagination } from '../components/Pagination';
 import { Sidebar } from '../../components/Sidebar';
+import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
 import formatDate from '../../util/formatDate';
 
@@ -31,6 +31,7 @@ interface CreateUserFormData {
   name: string;
   email: string;
   created_at: Date;
+  is_admin: boolean;
 }
 
 export default function UserList(): JSX.Element {
@@ -38,17 +39,25 @@ export default function UserList(): JSX.Element {
   const [userSelected, setUserSelected] = useState<CreateUserFormData>(
     {} as CreateUserFormData,
   );
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const { isLoading } = useAuth();
+
   useEffect(() => {
     async function loadUsers() {
-      const { data } = await api.get('users');
-      setUsers(data);
+      if (!isLoading) {
+        try {
+          const { data } = await api.get('users');
+          setUsers(data);
+        } catch (error) {
+          alert('Falha ao carregar usuários');
+        }
+      }
     }
-
     loadUsers();
-  }, []);
+  }, [isLoading]);
 
   const handleOpenModal = useCallback(
     (id: string) => {
@@ -58,14 +67,44 @@ export default function UserList(): JSX.Element {
     [users, onOpen],
   );
 
-  const handleDeleteUser = useCallback(async (id: string) => {
-    try {
-      await api.delete(`users/${id}`);
-      alert('Usuário excluído com sucesso');
-    } catch (error) {
-      alert('Erro ao exlcuir usuário');
-    }
-  }, []);
+  const handleUpdateUsers = useCallback(
+    ({ name, email }) => {
+      setUsers(
+        users.map(user =>
+          user.id === userSelected.id
+            ? {
+                ...userSelected,
+                name,
+                email,
+              }
+            : user,
+        ),
+      );
+    },
+    [users, userSelected],
+  );
+
+  const handleDeleteUser = useCallback(
+    async (id: string) => {
+      try {
+        setIsDeleting(true);
+        await api.delete('users', {
+          data: {
+            id,
+          },
+        });
+
+        alert('Usuário excluído com sucesso');
+
+        setUsers(users.filter(user => user.id !== id));
+      } catch (error) {
+        alert('Erro ao exlcuir usuário');
+      } finally {
+        setIsDeleting(false);
+      }
+    },
+    [users],
+  );
 
   return (
     <Box>
@@ -75,19 +114,19 @@ export default function UserList(): JSX.Element {
         isOpen={isOpen}
         onClose={onClose}
         user={{ ...userSelected, password: '', password_confirmation: '' }}
+        handleUpdateUsers={handleUpdateUsers}
       />
 
       <Flex w="100%" my="6" maxW={1480} mx="auto" px="6">
         <Sidebar />
 
-        <Box flex="1" borderRadius={8} bg="gray.800" p="8">
+        <Box flex="1" borderRadius={8} bg="gray.800" pt="8">
           <Flex mb="8" justify="space-between" align="center">
             <Heading size="lg" fontWeight="normal">
               Usuários
             </Heading>
             <NextLink href="/users/create">
               <Button
-                as="a"
                 size="sm"
                 fontSize="sm"
                 colorScheme="pink"
@@ -129,13 +168,9 @@ export default function UserList(): JSX.Element {
                       </Button>
                       <Button
                         colorScheme="red"
-                        leftIcon={
-                          <Icon
-                            as={RiDeleteBin5Fill}
-                            fontSize="16"
-                            onClick={() => handleDeleteUser(user.id)}
-                          />
-                        }
+                        onClick={() => handleDeleteUser(user.id)}
+                        isLoading={isDeleting}
+                        leftIcon={<Icon as={RiDeleteBin5Fill} fontSize="16" />}
                       >
                         Excluir
                       </Button>
@@ -145,7 +180,6 @@ export default function UserList(): JSX.Element {
               ))}
             </Tbody>
           </Table>
-          {/* <Pagination /> */}
         </Box>
       </Flex>
     </Box>

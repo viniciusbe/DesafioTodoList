@@ -18,9 +18,13 @@ export function ensureAuthenticated(request: NextApiRequest): string | null {
 
   const [, token] = authHeader?.split(' ');
 
-  const decoded = verify(token, authConfig.jwt.secret);
+  try {
+    const decoded = verify(token, authConfig.jwt.secret);
 
-  const { sub } = decoded as ITokenPayload;
+    const { sub } = decoded as ITokenPayload;
 
-  return sub;
+    return sub;
+  } catch (error) {
+    return null;
+  }
 }

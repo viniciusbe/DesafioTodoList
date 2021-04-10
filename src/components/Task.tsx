@@ -20,15 +20,16 @@ import {
 interface IUpdateTask {
   id: string;
   name: string;
+  is_completed: boolean;
 }
 
-interface CustomEditable {
+interface CustomEditableProps {
   taskName: string;
   taskId: string;
   handleUpdateTask: (task: IUpdateTask) => Promise<void>;
   handleDeleteTask: (id: string) => Promise<void>;
   handleCompleteTask: (id: string) => Promise<void>;
-  isCompleted?: boolean;
+  isCompleted: boolean;
 }
 
 export function Task({
@@ -37,13 +38,17 @@ export function Task({
   handleUpdateTask,
   handleDeleteTask,
   handleCompleteTask,
-  isCompleted = false,
-}: CustomEditable): JSX.Element {
+  isCompleted,
+}: CustomEditableProps): JSX.Element {
   const handleSubmit = useCallback(
-    async nextValue => {
-      handleUpdateTask({ id: taskId, name: nextValue });
+    nextValue => {
+      handleUpdateTask({
+        id: taskId,
+        name: nextValue,
+        is_completed: isCompleted,
+      });
     },
-    [taskId, handleUpdateTask],
+    [taskId, handleUpdateTask, isCompleted],
   );
 
   function EditableControls() {
@@ -97,7 +102,13 @@ export function Task({
         <Checkbox
           colorScheme="pink"
           defaultChecked={isCompleted}
-          onChange={() => handleCompleteTask(taskId)}
+          onChange={() =>
+            handleUpdateTask({
+              id: taskId,
+              name: taskName,
+              is_completed: !isCompleted,
+            })
+          }
         />
         <EditablePreview />
       </HStack>

@@ -1,4 +1,14 @@
-import { Flex, Button, Stack } from '@chakra-ui/react';
+import {
+  Flex,
+  Button,
+  Stack,
+  Heading,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+} from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -24,9 +34,13 @@ export default function SignIn(): JSX.Element {
 
   const { errors } = formState;
 
-  const { signIn } = useAuth();
+  const { signIn, isLoading, user } = useAuth();
 
   const router = useRouter();
+
+  if (!isLoading && user) {
+    router.push('/tasks');
+  }
 
   const handleSignIn: SubmitHandler<SignInFormData> = async values => {
     try {
@@ -53,25 +67,40 @@ export default function SignIn(): JSX.Element {
         flexDir="column"
         onSubmit={handleSubmit(handleSignIn)}
       >
-        <Stack spacing="4">
-          <Input label="E-mail" error={errors.email} {...register('email')} />
-          <Input
-            type="password"
-            label="Senha"
-            error={errors.password}
-            {...register('password')}
-          />
-        </Stack>
+        <Tabs isFitted>
+          <TabList>
+            <Tab>Log in</Tab>
+            <Tab>Sign in</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <Stack spacing="4">
+                <Input
+                  label="E-mail"
+                  error={errors.email}
+                  {...register('email')}
+                />
+                <Input
+                  type="password"
+                  label="Senha"
+                  error={errors.password}
+                  {...register('password')}
+                />
+              </Stack>
 
-        <Button
-          type="submit"
-          mt="6"
-          colorScheme="pink"
-          size="lg"
-          isLoading={formState.isSubmitting}
-        >
-          Entrar
-        </Button>
+              <Button
+                type="submit"
+                mt="6"
+                colorScheme="pink"
+                size="lg"
+                isLoading={formState.isSubmitting}
+              >
+                Entrar
+              </Button>
+            </TabPanel>
+            <TabPanel />
+          </TabPanels>
+        </Tabs>
       </Flex>
     </Flex>
   );

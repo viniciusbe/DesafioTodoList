@@ -14,92 +14,88 @@ import { useCallback, useEffect, useState } from 'react';
 import { Task } from '../../components/Task';
 import { Header } from '../../components/Header';
 import { Sidebar } from '../../components/Sidebar';
-// import { Pagination } from '../components/Pagination';
+import api from '../../services/api';
+import { useAuth } from '../../hooks/auth';
 
 interface ITask {
   id: string;
   name: string;
-  isCompleted: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  is_completed: boolean;
 }
 
 export default function UserList(): JSX.Element {
   const [tasks, setTasks] = useState<ITask[]>([]);
   const [pendingTasks, setPendingTasks] = useState<ITask[]>([]);
   const [completedTasks, setCompletedTasks] = useState<ITask[]>([]);
+  const { isLoading, user } = useAuth();
 
   useEffect(() => {
-    const data = [
-      {
-        id: '1',
-        name: 'Tarefa 1',
-        isCompleted: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: '2',
-        name: 'Tarefa 2',
-        isCompleted: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: '3',
-        name: 'Tarefa 3',
-        isCompleted: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: '4',
-        name: 'Tarefa 4',
-        isCompleted: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-    setTasks(data);
-  }, []);
+    if (!isLoading && user) {
+      const loadTasks = async () => {
+        try {
+          const { data } = await api.get('tasks');
+
+          setTasks(data);
+        } catch (error) {
+          alert('Falha ao carregar tarefa');
+        }
+      };
+      loadTasks();
+    }
+  }, [isLoading, user]);
 
   useEffect(() => {
-    setPendingTasks(tasks.filter(task => !task.isCompleted));
-    setCompletedTasks(tasks.filter(task => task.isCompleted));
+    setPendingTasks(tasks.filter(task => !task.is_completed));
+
+    setCompletedTasks(tasks.filter(task => task.is_completed));
   }, [tasks]);
 
-  const handleCreateTask = useCallback(() => {
-    setTasks([
-      {
-        id: String(new Date()),
-        name: 'Nova tarefa',
-        isCompleted: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      ...tasks,
-    ]);
+  const handleCreateTask = useCallback(async () => {
+    const { data } = await api.post('tasks', {
+      name: 'Nova tarefa',
+    });
+
+    setTasks([data, ...tasks]);
   }, [tasks]);
 
   const handleUpdateTask = useCallback(
-    async ({ id, name }) => {
-      setTasks(
-        tasks.map(task => {
-          return task.id === id
-            ? {
-                ...task,
-                name,
-              }
-            : task;
-        }),
-      );
+    async ({ id, name, is_completed }: ITask) => {
+      try {
+        await api.put('tasks', {
+          id,
+          name,
+          is_completed,
+        });
+
+        setTasks(
+          tasks.map(task => {
+            return task.id === id
+              ? {
+                  ...task,
+                  name,
+                  is_completed,
+                }
+              : task;
+          }),
+        );
+      } catch (error) {
+        alert('Erro ao atualizar');
+      }
     },
     [tasks],
   );
 
   const handleDeleteTask = useCallback(
     async id => {
-      setTasks(tasks.filter(task => task.id !== id));
+      try {
+        await api.delete('tasks', {
+          data: { id },
+        });
+
+        setTasks(tasks.filter(task => task.id !== id));
+      } catch (error) {
+        alert('Falha ao excluir tarefa');
+      }
     },
     [tasks],
   );
@@ -111,7 +107,7 @@ export default function UserList(): JSX.Element {
           task.id === id
             ? {
                 ...task,
-                isCompleted: !task.isCompleted,
+                is_completed: !task.is_completed,
               }
             : task,
         ),
@@ -127,7 +123,7 @@ export default function UserList(): JSX.Element {
       <Flex w="100%" my="6" maxW={1480} mx="auto" px="6">
         <Sidebar />
 
-        <Box flex="1" borderRadius={8} bg="gray.800" p="8">
+        <Box flex="1" borderRadius={8} bg="gray.800" pt="8">
           <Flex mb="8" justify="space-between" align="center">
             <Heading size="lg" fontWeight="normal">
               Tarefas
@@ -143,6 +139,7 @@ export default function UserList(): JSX.Element {
               Criar tarefa
             </Button>
           </Flex>
+
           <VStack spacing="4" divider={<StackDivider borderColor="gray.500" />}>
             <StackDivider />
             {tasks.length || (
@@ -158,6 +155,7 @@ export default function UserList(): JSX.Element {
                 handleUpdateTask={handleUpdateTask}
                 handleDeleteTask={handleDeleteTask}
                 handleCompleteTask={handleCompleteTask}
+                isCompleted={task.is_completed}
               />
             ))}
             {completedTasks.map(task => (
@@ -168,7 +166,7 @@ export default function UserList(): JSX.Element {
                 handleUpdateTask={handleUpdateTask}
                 handleDeleteTask={handleDeleteTask}
                 handleCompleteTask={handleCompleteTask}
-                isCompleted
+                isCompleted={task.is_completed}
               />
             ))}
           </VStack>

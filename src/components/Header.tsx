@@ -1,13 +1,36 @@
-import { Flex, Text, Input, Icon, HStack, Box, Avatar } from '@chakra-ui/react';
 import {
-  RiSearchLine,
-  RiNotificationLine,
-  RiUserAddLine,
-} from 'react-icons/ri';
+  Flex,
+  Text,
+  HStack,
+  Box,
+  Avatar,
+  IconButton,
+  Button,
+  Icon,
+  Link,
+} from '@chakra-ui/react';
+
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import { useCallback } from 'react';
+
+import { RiLogoutBoxRLine, RiLoginCircleLine } from 'react-icons/ri';
+
 import { useAuth } from '../hooks/auth';
 
 export function Header(): JSX.Element {
-  const { user } = useAuth();
+  const { user, signOut, isLoading } = useAuth();
+
+  const router = useRouter();
+
+  if (!isLoading && !user) {
+    router.push('/');
+  }
+
+  const handleSignOut = useCallback(() => {
+    signOut();
+    router.push('/');
+  }, [router, signOut]);
 
   return (
     <Flex
@@ -25,16 +48,39 @@ export function Header(): JSX.Element {
       </Text>
 
       <Flex align="center" ml="auto">
-        <Flex align="center">
-          <Box mr="4" textAlign="right">
-            <Text>{user?.name}</Text>
-            <Text color="gray.300" fontSize="small">
-              {user?.email}
-            </Text>
-          </Box>
+        <HStack align="center" spacing="4">
+          {isLoading && <Text>Carregando</Text>}
 
-          <Avatar size="md" name="Vinícius Bernardes" />
-        </Flex>
+          {!isLoading && user ? (
+            <>
+              <Box textAlign="right">
+                <Text>{user.name}</Text>
+                <Text color="gray.300" fontSize="small">
+                  {user.email}
+                </Text>
+              </Box>
+              <NextLink href="/profile">
+                <Link _hover={{}}>
+                  <Avatar size="md" name={user.name} />
+                </Link>
+              </NextLink>
+              <IconButton
+                aria-label="Sign out"
+                icon={<Icon as={RiLogoutBoxRLine} />}
+                onClick={handleSignOut}
+              />
+            </>
+          ) : (
+            <Link href="/">
+              <Button
+                aria-label="Sign in"
+                leftIcon={<Icon as={RiLoginCircleLine} />}
+              >
+                Fazer login
+              </Button>
+            </Link>
+          )}
+        </HStack>
       </Flex>
     </Flex>
   );

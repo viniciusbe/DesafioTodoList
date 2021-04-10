@@ -21,28 +21,30 @@ import { useEffect } from 'react';
 import { Input } from '../Form/Input';
 import api from '../../services/api';
 
-interface EditUserFormData {
+export interface EditUserFormData {
   name: string;
   email: string;
   password: string;
   password_confirmation: string;
+  is_admin: boolean;
 }
 
 interface EditUserProps {
   isOpen: boolean;
   onClose: () => void;
   user: EditUserFormData;
+  handleUpdateUsers: (user: EditUserFormData) => void;
 }
 
-const createUserFormSchema = yup.object().shape({
+const editUserFormSchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
   email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
+  is_admin: yup.boolean().required(),
   password: yup.string().when('isResetPassword', {
     is: true,
     then: yup.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
     otherwise: yup.string().ensure().optional(),
   }),
-
   password_confirmation: yup
     .string()
     .oneOf([null, yup.ref('password')], 'As senhas precisam ser iguais'),
@@ -52,9 +54,10 @@ export function EditUser({
   isOpen,
   onClose,
   user,
+  handleUpdateUsers,
 }: EditUserProps): JSX.Element {
   const { register, handleSubmit, formState, reset } = useForm({
-    resolver: yupResolver(createUserFormSchema),
+    resolver: yupResolver(editUserFormSchema),
   });
 
   const { errors } = formState;
@@ -66,8 +69,10 @@ export function EditUser({
   const handleEditUser: SubmitHandler<EditUserFormData> = async values => {
     try {
       await api.put('users', values);
-      alert('Usuário atualizado com sucesso!');
+
+      handleUpdateUsers(values);
       onClose();
+      alert('Usuário atualizado com sucesso!');
     } catch {
       alert('Falha ao criar novo usuário');
     }
@@ -95,6 +100,8 @@ export function EditUser({
                     {...register('email')}
                   />
 
+                  <Checkbox {...register('is_admin')}>Administrador?</Checkbox>
+
                   <Checkbox {...register('isResetPassword')}>
                     Resetar a senha?
                   </Checkbox>
@@ -116,7 +123,12 @@ export function EditUser({
             </ModalBody>
 
             <ModalFooter mt="4">
-              <Button colorScheme="purple" mr={3} type="submit">
+              <Button
+                colorScheme="purple"
+                mr={3}
+                type="submit"
+                isLoading={formState.isSubmitting}
+              >
                 Confirmar
               </Button>
               <Button variant="ghost" onClick={onClose}>
