@@ -1,6 +1,5 @@
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
 import { ColorModeScript } from '@chakra-ui/react';
-import { AuthProvider } from '../hooks/auth';
 
 export default class Document extends NextDocument {
   render(): JSX.Element {

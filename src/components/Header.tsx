@@ -1,3 +1,4 @@
+import { HamburgerIcon } from '@chakra-ui/icons';
 import {
   Flex,
   Text,
@@ -8,18 +9,31 @@ import {
   Button,
   Icon,
   Link,
+  useMediaQuery,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react';
 
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 
-import { RiLogoutBoxRLine, RiLoginCircleLine } from 'react-icons/ri';
+import {
+  RiLogoutBoxRLine,
+  RiLoginCircleLine,
+  RiTaskLine,
+  RiContactsLine,
+  RiProfileLine,
+} from 'react-icons/ri';
 
 import { useAuth } from '../hooks/auth';
 
 export function Header(): JSX.Element {
   const { user, signOut, isLoading } = useAuth();
+
+  const [isLargerThan800] = useMediaQuery(['(min-width: 800px)']);
 
   const router = useRouter();
 
@@ -36,52 +50,98 @@ export function Header(): JSX.Element {
     <Flex
       as="header"
       w="100%"
-      maxWidth={1480}
+      maxWidth={1120}
       h="20"
       mx="auto"
       mt="4"
       px="6"
       align="center"
     >
-      <Text fontSize="3xl" fontWeight="bold" letterSpacing="tight" w="64">
+      <Text
+        fontSize="3xl"
+        fontWeight="bold"
+        letterSpacing="tight"
+        ml="4"
+        w="64"
+      >
         ToDoList
       </Text>
+      {isLargerThan800 ? (
+        <Flex align="center" ml="auto">
+          <HStack align="center" spacing="4">
+            {isLoading && <Text>Carregando</Text>}
 
-      <Flex align="center" ml="auto">
-        <HStack align="center" spacing="4">
-          {isLoading && <Text>Carregando</Text>}
+            {!isLoading && user ? (
+              <>
+                <Box textAlign="right">
+                  <Text>{user.name}</Text>
+                  <Text color="gray.300" fontSize="small">
+                    {user.email}
+                  </Text>
+                </Box>
 
-          {!isLoading && user ? (
-            <>
-              <Box textAlign="right">
-                <Text>{user.name}</Text>
-                <Text color="gray.300" fontSize="small">
-                  {user.email}
+                <NextLink href="/profile">
+                  <Link _hover={{}}>
+                    <Avatar size="md" name={user.name} />
+                  </Link>
+                </NextLink>
+
+                <IconButton
+                  aria-label="Sign out"
+                  icon={<Icon as={RiLogoutBoxRLine} />}
+                  onClick={handleSignOut}
+                />
+              </>
+            ) : (
+              <Link href="/">
+                <Button
+                  aria-label="Sign in"
+                  leftIcon={<Icon as={RiLoginCircleLine} />}
+                >
+                  Fazer login
+                </Button>
+              </Link>
+            )}
+          </HStack>
+        </Flex>
+      ) : (
+        <Menu>
+          <MenuButton
+            ml="auto"
+            as={IconButton}
+            aria-label="Options"
+            icon={<HamburgerIcon />}
+            variant="outline"
+          />
+          <MenuList>
+            <NextLink href="/tasks">
+              <MenuItem icon={<RiTaskLine fontSize="20" />}>
+                <Text ml="4" fontWeight="medium">
+                  Tarefas
                 </Text>
-              </Box>
-              <NextLink href="/profile">
-                <Link _hover={{}}>
-                  <Avatar size="md" name={user.name} />
-                </Link>
+              </MenuItem>
+            </NextLink>
+            <NextLink href="/profile">
+              <MenuItem icon={<RiProfileLine fontSize="20" />}>
+                <Text ml="4" fontWeight="medium">
+                  Perfil
+                </Text>
+              </MenuItem>
+            </NextLink>
+            {!isLoading && !!user?.is_admin && (
+              <NextLink href="/users">
+                <MenuItem icon={<RiContactsLine fontSize="20" />}>
+                  <Link display="flex" align="center">
+                    <Text ml="4" fontWeight="medium">
+                      Usuários
+                    </Text>
+                  </Link>
+                </MenuItem>
               </NextLink>
-              <IconButton
-                aria-label="Sign out"
-                icon={<Icon as={RiLogoutBoxRLine} />}
-                onClick={handleSignOut}
-              />
-            </>
-          ) : (
-            <Link href="/">
-              <Button
-                aria-label="Sign in"
-                leftIcon={<Icon as={RiLoginCircleLine} />}
-              >
-                Fazer login
-              </Button>
-            </Link>
-          )}
-        </HStack>
-      </Flex>
+            )}
+          </MenuList>
+        </Menu>
+      )}
     </Flex>
   );
 }

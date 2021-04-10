@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Divider,
   Flex,
   Heading,
   Icon,
@@ -12,10 +13,9 @@ import { RiAddLine } from 'react-icons/ri';
 import { useCallback, useEffect, useState } from 'react';
 
 import { Task } from '../../components/Task';
-import { Header } from '../../components/Header';
-import { Sidebar } from '../../components/Sidebar';
 import api from '../../services/api';
 import { useAuth } from '../../hooks/auth';
+import { Layout } from '../../components/Layout';
 
 interface ITask {
   id: string;
@@ -117,61 +117,56 @@ export default function UserList(): JSX.Element {
   );
 
   return (
-    <Box>
-      <Header />
+    <Layout>
+      <Box flex="1" pt="8">
+        <Flex mb="8" justify="space-between" align="center">
+          <Heading size="lg" fontWeight="normal">
+            Tarefas
+          </Heading>
 
-      <Flex w="100%" my="6" maxW={1480} mx="auto" px="6">
-        <Sidebar />
+          <Button
+            size="sm"
+            fontSize="sm"
+            colorScheme="pink"
+            onClick={handleCreateTask}
+            leftIcon={<Icon as={RiAddLine} fontSize="20" />}
+          >
+            Criar tarefa
+          </Button>
+        </Flex>
 
-        <Box flex="1" borderRadius={8} bg="gray.800" pt="8">
-          <Flex mb="8" justify="space-between" align="center">
-            <Heading size="lg" fontWeight="normal">
-              Tarefas
-            </Heading>
+        <Divider my="6" borderColor="gray.700" />
 
-            <Button
-              size="sm"
-              fontSize="sm"
-              colorScheme="pink"
-              onClick={handleCreateTask}
-              leftIcon={<Icon as={RiAddLine} fontSize="20" />}
-            >
-              Criar tarefa
-            </Button>
-          </Flex>
-
-          <VStack spacing="4" divider={<StackDivider borderColor="gray.500" />}>
-            <StackDivider />
-            {tasks.length || (
-              <Box>
-                <Text>Sem tarefas ainda</Text>
-              </Box>
-            )}
-            {pendingTasks.map(task => (
-              <Task
-                taskName={task.name}
-                key={task.id}
-                taskId={task.id}
-                handleUpdateTask={handleUpdateTask}
-                handleDeleteTask={handleDeleteTask}
-                handleCompleteTask={handleCompleteTask}
-                isCompleted={task.is_completed}
-              />
-            ))}
-            {completedTasks.map(task => (
-              <Task
-                taskName={task.name}
-                key={task.id}
-                taskId={task.id}
-                handleUpdateTask={handleUpdateTask}
-                handleDeleteTask={handleDeleteTask}
-                handleCompleteTask={handleCompleteTask}
-                isCompleted={task.is_completed}
-              />
-            ))}
-          </VStack>
-        </Box>
-      </Flex>
-    </Box>
+        <VStack spacing="4" divider={<StackDivider borderColor="gray.500" />}>
+          {tasks.length || (
+            <Box>
+              <Text>Sem tarefas ainda</Text>
+            </Box>
+          )}
+          {pendingTasks.map(task => (
+            <Task
+              taskName={task.name}
+              key={task.id}
+              taskId={task.id}
+              handleUpdateTask={handleUpdateTask}
+              handleDeleteTask={handleDeleteTask}
+              handleCompleteTask={handleCompleteTask}
+              isCompleted={task.is_completed}
+            />
+          ))}
+          {completedTasks.map(task => (
+            <Task
+              taskName={task.name}
+              key={task.id}
+              taskId={task.id}
+              handleUpdateTask={handleUpdateTask}
+              handleDeleteTask={handleDeleteTask}
+              handleCompleteTask={handleCompleteTask}
+              isCompleted={task.is_completed}
+            />
+          ))}
+        </VStack>
+      </Box>
+    </Layout>
   );
 }

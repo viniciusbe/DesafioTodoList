@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Checkbox,
   Modal,
@@ -9,7 +8,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  SimpleGrid,
   VStack,
 } from '@chakra-ui/react';
 
@@ -79,65 +77,65 @@ export function EditUser({
   };
 
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent bg="gray.800">
-          <ModalHeader>Editar usuário</ModalHeader>
-          <Box as="form" flex="1" p="8" onSubmit={handleSubmit(handleEditUser)}>
-            <ModalCloseButton />
-            <ModalBody>
-              <VStack spacing="8">
-                <SimpleGrid minChildWidth="240px" spacing="8" w="100%">
-                  <Input
-                    label="Nome completo"
-                    error={errors.name}
-                    {...register('name')}
-                  />
-                  <Input
-                    label="E-mail"
-                    error={errors.email}
-                    {...register('email')}
-                  />
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <ModalOverlay />
+      <ModalContent
+        bg="gray.800"
+        as="form"
+        flex="1"
+        onSubmit={handleSubmit(handleEditUser)}
+      >
+        <ModalHeader>Editar usuário</ModalHeader>
 
-                  <Checkbox {...register('is_admin')}>Administrador?</Checkbox>
+        <ModalCloseButton />
 
-                  <Checkbox {...register('isResetPassword')}>
-                    Resetar a senha?
-                  </Checkbox>
+        <ModalBody>
+          <VStack spacing="4" minChildWidth="240px" w="100%" align="flex-start">
+            <Input
+              label="Nome completo"
+              error={errors.name}
+              {...register('name')}
+            />
 
-                  <Input
-                    label="Senha"
-                    type="password"
-                    error={errors.password}
-                    {...register('password')}
-                  />
-                  <Input
-                    label="Confirmação da senha"
-                    type="password"
-                    error={errors.password_confirmation}
-                    {...register('password_confirmation')}
-                  />
-                </SimpleGrid>
-              </VStack>
-            </ModalBody>
+            <Input label="E-mail" error={errors.email} {...register('email')} />
 
-            <ModalFooter mt="4">
-              <Button
-                colorScheme="purple"
-                mr={3}
-                type="submit"
-                isLoading={formState.isSubmitting}
-              >
-                Confirmar
-              </Button>
-              <Button variant="ghost" onClick={onClose}>
-                Cancelar
-              </Button>
-            </ModalFooter>
-          </Box>
-        </ModalContent>
-      </Modal>
-    </>
+            <Checkbox {...register('is_admin')}>Administrador?</Checkbox>
+
+            <Checkbox {...register('isResetPassword')}>
+              Resetar a senha?
+            </Checkbox>
+
+            <Input
+              label="Senha"
+              type="password"
+              error={errors.password}
+              {...register('password')}
+            />
+
+            <Input
+              label="Confirmação da senha"
+              type="password"
+              error={errors.password_confirmation}
+              {...register('password_confirmation')}
+            />
+          </VStack>
+        </ModalBody>
+
+        <ModalFooter mt="4">
+          <Button
+            colorScheme="purple"
+            mr={3}
+            type="submit"
+            isLoading={formState.isSubmitting}
+          >
+            Confirmar
+          </Button>
+
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }

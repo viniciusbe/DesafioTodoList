@@ -13,15 +13,15 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 
 import { RiAddLine, RiPencilLine, RiDeleteBin5Fill } from 'react-icons/ri';
 
-import { Header } from '../../components/Header';
+import { Layout } from '../../components/Layout';
 import { EditUser } from '../../components/Modal/EditUser';
-import { Sidebar } from '../../components/Sidebar';
 import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
 import formatDate from '../../util/formatDate';
@@ -40,6 +40,8 @@ export default function UserList(): JSX.Element {
     {} as CreateUserFormData,
   );
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const [isLargerThan800] = useMediaQuery(['(min-width: 800px)']);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -94,8 +96,6 @@ export default function UserList(): JSX.Element {
           },
         });
 
-        alert('Usuário excluído com sucesso');
-
         setUsers(users.filter(user => user.id !== id));
       } catch (error) {
         alert('Erro ao exlcuir usuário');
@@ -107,81 +107,75 @@ export default function UserList(): JSX.Element {
   );
 
   return (
-    <Box>
-      <Header />
+    <Layout>
+      <Box flex="1" pt="8">
+        <EditUser
+          isOpen={isOpen}
+          onClose={onClose}
+          user={{ ...userSelected, password: '', password_confirmation: '' }}
+          handleUpdateUsers={handleUpdateUsers}
+        />
+        <Flex mb="8" justify="space-between" align="center">
+          <Heading size="lg" fontWeight="normal">
+            Usuários
+          </Heading>
 
-      <EditUser
-        isOpen={isOpen}
-        onClose={onClose}
-        user={{ ...userSelected, password: '', password_confirmation: '' }}
-        handleUpdateUsers={handleUpdateUsers}
-      />
+          <NextLink href="/users/create">
+            <Button
+              size="sm"
+              fontSize="sm"
+              colorScheme="pink"
+              leftIcon={<Icon as={RiAddLine} fontSize="20" />}
+            >
+              Criar usuário
+            </Button>
+          </NextLink>
+        </Flex>
 
-      <Flex w="100%" my="6" maxW={1480} mx="auto" px="6">
-        <Sidebar />
-
-        <Box flex="1" borderRadius={8} bg="gray.800" pt="8">
-          <Flex mb="8" justify="space-between" align="center">
-            <Heading size="lg" fontWeight="normal">
-              Usuários
-            </Heading>
-            <NextLink href="/users/create">
-              <Button
-                size="sm"
-                fontSize="sm"
-                colorScheme="pink"
-                leftIcon={<Icon as={RiAddLine} fontSize="20" />}
-              >
-                Criar usuário
-              </Button>
-            </NextLink>
-          </Flex>
-
-          <Table colorScheme="whiteAlpha">
-            <Thead>
-              <Tr>
-                <Th>Usuário</Th>
-                <Th>Data de cadastro</Th>
-                <Th width="8" />
+        <Table colorScheme="whiteAlpha">
+          <Thead>
+            <Tr>
+              <Th>Usuário</Th>
+              {isLargerThan800 && <Th>Data de cadastro</Th>}
+              <Th width="8" />
+            </Tr>
+          </Thead>
+          <Tbody>
+            {users.map(user => (
+              <Tr key={user.id}>
+                <Td>
+                  <Box>
+                    <Text fontWeight="bold">{user.name}</Text>
+                    <Text fontSize="sm" color="gray.300">
+                      {user.email}
+                    </Text>
+                  </Box>
+                </Td>
+                {isLargerThan800 && <Td>{formatDate(user.created_at)}</Td>}
+                <Td>
+                  <ButtonGroup size="sm">
+                    <Button
+                      onClick={() => handleOpenModal(user.id)}
+                      colorScheme="purple"
+                      leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      onClick={() => handleDeleteUser(user.id)}
+                      isLoading={isDeleting}
+                      leftIcon={<Icon as={RiDeleteBin5Fill} fontSize="16" />}
+                    >
+                      Excluir
+                    </Button>
+                  </ButtonGroup>
+                </Td>
               </Tr>
-            </Thead>
-            <Tbody>
-              {users.map(user => (
-                <Tr key={user.id}>
-                  <Td>
-                    <Box>
-                      <Text fontWeight="bold">{user.name}</Text>
-                      <Text fontSize="sm" color="gray.300">
-                        {user.email}
-                      </Text>
-                    </Box>
-                  </Td>
-                  <Td>{formatDate(user.created_at)}</Td>
-                  <Td>
-                    <ButtonGroup size="sm">
-                      <Button
-                        onClick={() => handleOpenModal(user.id)}
-                        colorScheme="purple"
-                        leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                      >
-                        Editar
-                      </Button>
-                      <Button
-                        colorScheme="red"
-                        onClick={() => handleDeleteUser(user.id)}
-                        isLoading={isDeleting}
-                        leftIcon={<Icon as={RiDeleteBin5Fill} fontSize="16" />}
-                      >
-                        Excluir
-                      </Button>
-                    </ButtonGroup>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
-      </Flex>
-    </Box>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
+    </Layout>
   );
 }

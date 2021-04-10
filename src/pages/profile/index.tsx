@@ -18,8 +18,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
 import { Input } from '../../components/Form/Input';
-import { Header } from '../../components/Header';
-import { Sidebar } from '../../components/Sidebar';
+import { Layout } from '../../components/Layout';
 
 import api from '../../services/api';
 import { useAuth } from '../../hooks/auth';
@@ -71,74 +70,60 @@ export default function CreateUser(): JSX.Element {
   };
 
   return (
-    <Box>
-      <Header />
+    <Layout>
+      <Box
+        as="form"
+        flex="1"
+        pt="8"
+        onSubmit={handleSubmit(handleUpdateProfile)}
+      >
+        <Heading size="lg" fontWeight="normal">
+          Editar perfil
+        </Heading>
 
-      <Flex w="100%" my="6" maxW={1480} mx="auto" px="6">
-        <Sidebar />
+        <Divider my="6" borderColor="gray.700" />
 
-        <Box
-          as="form"
-          flex="1"
-          borderRadius={8}
-          bg="gray.800"
-          p="8"
-          onSubmit={handleSubmit(handleUpdateProfile)}
-        >
-          <Heading size="lg" fontWeight="normal">
-            Editar perfil
-          </Heading>
+        <VStack spacing="8">
+          <SimpleGrid minChildWidth="240px" spacing="8" w="100%">
+            <Input
+              label="Nome completo"
+              error={errors.name}
+              {...register('name')}
+            />
+            <Input label="E-mail" error={errors.email} {...register('email')} />
+          </SimpleGrid>
 
-          <Divider my="6" borderColor="gray.700" />
+          <Checkbox {...register('isResetPassword')}>Resetar a senha?</Checkbox>
 
-          <VStack spacing="8">
-            <SimpleGrid minChildWidth="240px" spacing="8" w="100%">
-              <Input
-                label="Nome completo"
-                error={errors.name}
-                {...register('name')}
-              />
-              <Input
-                label="E-mail"
-                error={errors.email}
-                {...register('email')}
-              />
-            </SimpleGrid>
+          <SimpleGrid minChildWidth="240px" spacing="8" w="100%">
+            <Input
+              label="Senha"
+              type="password"
+              error={errors.password}
+              {...register('password')}
+            />
+            <Input
+              label="Confirmação da senha"
+              type="password"
+              error={errors.password_confirmation}
+              {...register('password_confirmation')}
+            />
+          </SimpleGrid>
+        </VStack>
 
-            <Checkbox {...register('isResetPassword')}>
-              Resetar a senha?
-            </Checkbox>
-
-            <SimpleGrid minChildWidth="240px" spacing="8" w="100%">
-              <Input
-                label="Senha"
-                type="password"
-                error={errors.password}
-                {...register('password')}
-              />
-              <Input
-                label="Confirmação da senha"
-                type="password"
-                error={errors.password_confirmation}
-                {...register('password_confirmation')}
-              />
-            </SimpleGrid>
-          </VStack>
-
-          <Flex mt="8" justify="flex-end">
-            <HStack spacing="4">
-              <Button onClick={() => router.push('/tasks')}>Cancelar</Button>
-              <Button
-                type="submit"
-                colorScheme="pink"
-                isLoading={formState.isSubmitting}
-              >
-                Salvar
-              </Button>
-            </HStack>
-          </Flex>
-        </Box>
-      </Flex>
-    </Box>
+        <Flex mt="8" justify="flex-end">
+          <HStack spacing="4">
+            <Button onClick={() => router.push('/tasks')}>Cancelar</Button>
+            <Button
+              type="submit"
+              colorScheme="pink"
+              isLoading={formState.isSubmitting}
+            >
+              Salvar
+            </Button>
+          </HStack>
+        </Flex>
+      </Box>
+    </Layout>
   );
 }
