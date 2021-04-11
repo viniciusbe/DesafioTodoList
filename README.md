@@ -1,6 +1,6 @@
 ## Pré-requisitos
 
-Será preciso para instalar a aplicação:
+Será preciso para testar a aplicação:
 
 ```
 Node.js
