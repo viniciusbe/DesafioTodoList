@@ -18,7 +18,7 @@ import {
 
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   RiLogoutBoxRLine,
@@ -33,7 +33,13 @@ import { useAuth } from '../hooks/auth';
 export function Header(): JSX.Element {
   const { user, signOut, isLoading } = useAuth();
 
+  const [displayProfile, setDisplayProfile] = useState(true);
+
   const [isLargerThan800] = useMediaQuery(['(min-width: 800px)']);
+
+  useEffect(() => {
+    setDisplayProfile(isLargerThan800);
+  }, [isLargerThan800]);
 
   const router = useRouter();
 
@@ -66,7 +72,7 @@ export function Header(): JSX.Element {
       >
         ToDoList
       </Text>
-      {isLargerThan800 ? (
+      {displayProfile ? (
         <Flex align="center" ml="auto">
           <HStack align="center" spacing="4">
             {isLoading && <Text>Carregando</Text>}
