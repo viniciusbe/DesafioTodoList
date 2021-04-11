@@ -5,7 +5,6 @@ import { useAuth } from '../hooks/auth';
 
 export function Sidebar(): JSX.Element {
   const { isLoading, user } = useAuth();
-
   return (
     <Box as="aside" w="64" mr="8">
       <Stack spacing="12" align="flex-start">
@@ -22,7 +21,7 @@ export function Sidebar(): JSX.Element {
                 </Text>
               </Link>
             </NextLink>
-            {!isLoading && !!user?.is_admin && (
+            {!isLoading && user?.is_admin && (
               <NextLink href="/users">
                 <Link display="flex" align="center">
                   <Icon as={RiContactsLine} fontSize="20" />

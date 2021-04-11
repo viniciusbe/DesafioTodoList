@@ -67,6 +67,7 @@ export default async function Profile(
       return response.status(200).json({
         ...updatedUser,
         password: undefined,
+        is_admin: user.is_admin,
       });
     }
     case 'DELETE': {
