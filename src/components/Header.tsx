@@ -103,6 +103,7 @@ export function Header(): JSX.Element {
               <Link href="/">
                 <Button
                   aria-label="Sign in"
+                  colorScheme="gray"
                   leftIcon={<Icon as={RiLoginCircleLine} />}
                 >
                   Fazer login
