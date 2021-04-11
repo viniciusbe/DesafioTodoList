@@ -3,7 +3,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { useRouter } from 'next/router';
 import { Input } from './Input';
 import { useAuth } from '../../hooks/auth';
 

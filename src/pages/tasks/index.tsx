@@ -100,22 +100,6 @@ export default function UserList(): JSX.Element {
     [tasks],
   );
 
-  const handleCompleteTask = useCallback(
-    async id => {
-      setTasks(
-        tasks.map(task =>
-          task.id === id
-            ? {
-                ...task,
-                is_completed: !task.is_completed,
-              }
-            : task,
-        ),
-      );
-    },
-    [tasks],
-  );
-
   return (
     <Layout>
       <Box flex="1" pt="8">
@@ -150,7 +134,6 @@ export default function UserList(): JSX.Element {
               taskId={task.id}
               handleUpdateTask={handleUpdateTask}
               handleDeleteTask={handleDeleteTask}
-              handleCompleteTask={handleCompleteTask}
               isCompleted={task.is_completed}
             />
           ))}
@@ -161,7 +144,6 @@ export default function UserList(): JSX.Element {
               taskId={task.id}
               handleUpdateTask={handleUpdateTask}
               handleDeleteTask={handleDeleteTask}
-              handleCompleteTask={handleCompleteTask}
               isCompleted={task.is_completed}
             />
           ))}

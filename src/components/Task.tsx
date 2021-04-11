@@ -28,7 +28,6 @@ interface CustomEditableProps {
   taskId: string;
   handleUpdateTask: (task: IUpdateTask) => Promise<void>;
   handleDeleteTask: (id: string) => Promise<void>;
-  handleCompleteTask: (id: string) => Promise<void>;
   isCompleted: boolean;
 }
 
@@ -37,7 +36,6 @@ export function Task({
   taskId,
   handleUpdateTask,
   handleDeleteTask,
-  handleCompleteTask,
   isCompleted,
 }: CustomEditableProps): JSX.Element {
   const handleSubmit = useCallback(
