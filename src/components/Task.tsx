@@ -58,7 +58,7 @@ export function Task({
     } = useEditableControls();
 
     return isEditing ? (
-      <ButtonGroup justifyContent="center" size="lg">
+      <ButtonGroup justifyContent="center" size="lg" colorScheme="blackAlpha">
         <IconButton
           aria-label="submit"
           icon={<RiCheckLine />}

@@ -84,6 +84,7 @@ export function EditUser({
         as="form"
         flex="1"
         onSubmit={handleSubmit(handleEditUser)}
+        color="white"
       >
         <ModalHeader>Editar usuário</ModalHeader>
 
@@ -131,7 +132,7 @@ export function EditUser({
             Confirmar
           </Button>
 
-          <Button variant="ghost" onClick={onClose}>
+          <Button onClick={onClose} colorScheme="gray">
             Cancelar
           </Button>
         </ModalFooter>

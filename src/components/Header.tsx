@@ -112,7 +112,7 @@ export function Header(): JSX.Element {
           </HStack>
         </Flex>
       ) : (
-        <Menu>
+        <Menu colorScheme="gray">
           <MenuButton
             ml="auto"
             as={IconButton}
