@@ -95,6 +95,8 @@ export function Header(): JSX.Element {
 
                 <IconButton
                   aria-label="Sign out"
+                  colorScheme="gray"
+                  bg="gray.600"
                   icon={<Icon as={RiLogoutBoxRLine} />}
                   onClick={handleSignOut}
                 />
@@ -104,6 +106,7 @@ export function Header(): JSX.Element {
                 <Button
                   aria-label="Sign in"
                   colorScheme="gray"
+                  bg="gray.600"
                   leftIcon={<Icon as={RiLoginCircleLine} />}
                 >
                   Fazer login

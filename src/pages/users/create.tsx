@@ -95,7 +95,11 @@ export default function CreateUser(): JSX.Element {
 
         <Flex mt="8" justify="flex-end">
           <HStack spacing="4">
-            <Button onClick={() => router.push('/users')} colorScheme="gray">
+            <Button
+              onClick={() => router.push('/users')}
+              colorScheme="gray"
+              bg="gray.600"
+            >
               Cancelar
             </Button>
             <Button

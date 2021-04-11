@@ -76,11 +76,13 @@ export function Task({
           aria-label="edit"
           icon={<RiEditLine />}
           {...getEditButtonProps()}
+          bg="gray.600"
         />
         <IconButton
           onClick={() => handleDeleteTask(taskId)}
           aria-label="delete"
           icon={<RiDeleteBin5Fill />}
+          bg="gray.600"
         />
       </ButtonGroup>
     );

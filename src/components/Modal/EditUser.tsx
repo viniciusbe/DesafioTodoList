@@ -132,7 +132,7 @@ export function EditUser({
             Confirmar
           </Button>
 
-          <Button onClick={onClose} colorScheme="gray">
+          <Button onClick={onClose} colorScheme="gray" bg="gray.600">
             Cancelar
           </Button>
         </ModalFooter>
