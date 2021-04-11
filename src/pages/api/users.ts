@@ -18,13 +18,13 @@ export default async function Users(
     const checkUserAdmin = await usersRepository.findOne(user_id);
 
     if (!checkUserAdmin?.is_admin) {
-      return response.status(400).json({
+      return response.status(401).json({
         status: 'erro',
         message: 'Usuário não é administrador',
       });
     }
   } else {
-    return response.status(400).json({
+    return response.status(401).json({
       status: 'erro',
       message: 'Token JWT inválido',
     });
