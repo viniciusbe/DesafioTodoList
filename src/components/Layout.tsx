@@ -18,7 +18,7 @@ export function Layout({ children }: LayoutProps): JSX.Element {
   }, [isLargerThan800]);
 
   return (
-    <Box bg="gray.800" w="100vw" h="100vh">
+    <Box bg="gray.800" w="100vw" h="100vh" color="white">
       <Header />
 
       <Flex w="100%" my="6" maxW={1120} mx="auto" px="6" bg="gray.800">

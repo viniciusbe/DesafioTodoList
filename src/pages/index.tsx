@@ -23,7 +23,14 @@ export default function Authentication(): JSX.Element {
   }
 
   return (
-    <Flex w="100vw" h="100vh" align="center" justify="center" bg="gray.800">
+    <Flex
+      w="100vw"
+      h="100vh"
+      align="center"
+      justify="center"
+      bg="gray.800"
+      color="white"
+    >
       <Tabs isFitted variant="enclosed" colorScheme="purple" w={360} px="8">
         <TabList>
           <Tab>Sign in</Tab>
