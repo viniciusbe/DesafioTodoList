@@ -5,7 +5,7 @@ import { AuthProvider } from '../hooks/auth';
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
-    <ChakraProvider resetCSS>
+    <ChakraProvider>
       <AuthProvider>
         <Component {...pageProps} />
       </AuthProvider>
