@@ -112,42 +112,50 @@ export function Header(): JSX.Element {
           </HStack>
         </Flex>
       ) : (
-        <Menu colorScheme="gray">
-          <MenuButton
+        <>
+          <IconButton
             ml="auto"
-            as={IconButton}
-            aria-label="Options"
-            icon={<HamburgerIcon />}
-            variant="outline"
+            aria-label="Sign out"
+            icon={<Icon as={RiLogoutBoxRLine} />}
+            onClick={handleSignOut}
           />
-          <MenuList>
-            <NextLink href="/tasks">
-              <MenuItem icon={<RiTaskLine fontSize="20" />}>
-                <Text ml="4" fontWeight="medium">
-                  Tarefas
-                </Text>
-              </MenuItem>
-            </NextLink>
-            <NextLink href="/profile">
-              <MenuItem icon={<RiProfileLine fontSize="20" />}>
-                <Text ml="4" fontWeight="medium">
-                  Perfil
-                </Text>
-              </MenuItem>
-            </NextLink>
-            {!isLoading && !!user?.is_admin && (
-              <NextLink href="/users">
-                <MenuItem icon={<RiContactsLine fontSize="20" />}>
-                  <Link display="flex" align="center">
-                    <Text ml="4" fontWeight="medium">
-                      Usuários
-                    </Text>
-                  </Link>
+          <Menu colorScheme="gray">
+            <MenuButton
+              ml="8"
+              as={IconButton}
+              aria-label="Options"
+              icon={<HamburgerIcon />}
+              variant="outline"
+            />
+            <MenuList>
+              <NextLink href="/tasks">
+                <MenuItem icon={<RiTaskLine fontSize="20" />}>
+                  <Text ml="4" fontWeight="medium">
+                    Tarefas
+                  </Text>
                 </MenuItem>
               </NextLink>
-            )}
-          </MenuList>
-        </Menu>
+              <NextLink href="/profile">
+                <MenuItem icon={<RiProfileLine fontSize="20" />}>
+                  <Text ml="4" fontWeight="medium">
+                    Perfil
+                  </Text>
+                </MenuItem>
+              </NextLink>
+              {!isLoading && !!user?.is_admin && (
+                <NextLink href="/users">
+                  <MenuItem icon={<RiContactsLine fontSize="20" />}>
+                    <Link display="flex" align="center">
+                      <Text ml="4" fontWeight="medium">
+                        Usuários
+                      </Text>
+                    </Link>
+                  </MenuItem>
+                </NextLink>
+              )}
+            </MenuList>
+          </Menu>
+        </>
       )}
     </Flex>
   );

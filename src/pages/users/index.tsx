@@ -5,6 +5,7 @@ import {
   Flex,
   Heading,
   Icon,
+  IconButton,
   Table,
   Tbody,
   Td,
@@ -108,7 +109,7 @@ export default function UserList(): JSX.Element {
 
   return (
     <Layout>
-      <Box flex="1" pt="8">
+      <Box flex="1" py="8">
         <EditUser
           isOpen={isOpen}
           onClose={onClose}
@@ -153,22 +154,24 @@ export default function UserList(): JSX.Element {
                 </Td>
                 {isLargerThan800 && <Td>{formatDate(user.created_at)}</Td>}
                 <Td>
-                  <ButtonGroup size="sm">
-                    <Button
+                  <ButtonGroup>
+                    <IconButton
+                      aria-label="Edit user"
                       onClick={() => handleOpenModal(user.id)}
                       colorScheme="purple"
-                      leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                      icon={<RiPencilLine fontSize="18" />}
                     >
                       Editar
-                    </Button>
-                    <Button
+                    </IconButton>
+                    <IconButton
+                      aria-label="Delete user"
                       colorScheme="red"
                       onClick={() => handleDeleteUser(user.id)}
                       isLoading={isDeleting}
-                      leftIcon={<Icon as={RiDeleteBin5Fill} fontSize="16" />}
+                      icon={<RiDeleteBin5Fill fontSize="18" />}
                     >
                       Excluir
-                    </Button>
+                    </IconButton>
                   </ButtonGroup>
                 </Td>
               </Tr>

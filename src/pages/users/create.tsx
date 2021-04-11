@@ -57,7 +57,7 @@ export default function CreateUser(): JSX.Element {
 
   return (
     <Layout>
-      <Box as="form" flex="1" pt="8" onSubmit={handleSubmit(handleCreateUser)}>
+      <Box as="form" flex="1" py="8" onSubmit={handleSubmit(handleCreateUser)}>
         <Heading size="lg" fontWeight="normal">
           Criar usuário
         </Heading>

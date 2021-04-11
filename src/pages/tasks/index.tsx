@@ -102,7 +102,7 @@ export default function UserList(): JSX.Element {
 
   return (
     <Layout>
-      <Box flex="1" pt="8">
+      <Box flex="1" py="8">
         <Flex mb="8" justify="space-between" align="center">
           <Heading size="lg" fontWeight="normal">
             Tarefas

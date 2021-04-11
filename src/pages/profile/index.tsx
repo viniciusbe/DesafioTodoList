@@ -74,7 +74,7 @@ export default function CreateUser(): JSX.Element {
       <Box
         as="form"
         flex="1"
-        pt="8"
+        py="8"
         onSubmit={handleSubmit(handleUpdateProfile)}
       >
         <Heading size="lg" fontWeight="normal">
