@@ -62,11 +62,13 @@ export function Task({
         <IconButton
           aria-label="submit"
           icon={<RiCheckLine />}
+          bg="gray.600"
           {...getSubmitButtonProps()}
         />
         <IconButton
           aria-label="cancel"
           icon={<RiCloseLine />}
+          bg="gray.600"
           {...getCancelButtonProps()}
         />
       </ButtonGroup>

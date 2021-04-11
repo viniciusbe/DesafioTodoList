@@ -122,6 +122,8 @@ export function Header(): JSX.Element {
             aria-label="Sign out"
             icon={<Icon as={RiLogoutBoxRLine} />}
             onClick={handleSignOut}
+            colorScheme="gray"
+            bg="gray.600"
           />
           <Menu colorScheme="gray">
             <MenuButton
@@ -130,8 +132,9 @@ export function Header(): JSX.Element {
               aria-label="Options"
               icon={<HamburgerIcon />}
               variant="outline"
+              bg="gray.600"
             />
-            <MenuList>
+            <MenuList bg="gray.600">
               <NextLink href="/tasks">
                 <MenuItem icon={<RiTaskLine fontSize="20" />}>
                   <Text ml="4" fontWeight="medium">
