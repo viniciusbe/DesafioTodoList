@@ -59,9 +59,10 @@ export function Header(): JSX.Element {
       maxWidth={1120}
       h="20"
       mx="auto"
-      mt="4"
+      pt="4"
       px="6"
       align="center"
+      bg="gray.800"
     >
       <Text
         fontSize="3xl"

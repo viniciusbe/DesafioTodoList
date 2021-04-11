@@ -18,10 +18,10 @@ export function Layout({ children }: LayoutProps): JSX.Element {
   }, [isLargerThan800]);
 
   return (
-    <Box>
+    <Box bg="gray.800" w="100vw" h="100vh">
       <Header />
 
-      <Flex w="100%" my="6" maxW={1120} mx="auto" px="6">
+      <Flex w="100%" my="6" maxW={1120} mx="auto" px="6" bg="gray.800">
         {displayProfile && <Sidebar />}
         {children}
       </Flex>
