@@ -24,10 +24,11 @@ Entre na pasta criada:
 cd DesafioTodoList
 ```
 
-Instale as dependências:
+Instalar as dependências, criar o arquivo das variáveis ambiente e informar as variáveis em branco:
 
 ```
 yarn
+cp .env.local.example .env.local
 ```
 
 Rode a aplicação:
